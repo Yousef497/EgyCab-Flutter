@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "69851407937",
+    "project_id": "egycab-f626b",
+    "storage_bucket": "egycab-f626b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69851407937:android:871267d78b1f211bd908c0",
+        "android_client_info": {
+          "package_name": "com.engez.riderapp.rider_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69851407937-58lr7tb7uqupug7o8643bs5uifo5a4i1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN571U1ScXMemcZMQ2oqG7bETxUCNWyAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "69851407937-58lr7tb7uqupug7o8643bs5uifo5a4i1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

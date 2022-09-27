@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>69851407937-j6sr8sg91ha6vpe4o2pogeuvia1j79b3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.69851407937-j6sr8sg91ha6vpe4o2pogeuvia1j79b3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDlubzPEjXNH-2fteZgGvFo5gZ3iQln0jg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>69851407937</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.engez.riderapp.riderApp</string>
+	<key>PROJECT_ID</key>
+	<string>egycab-f626b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>egycab-f626b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:69851407937:ios:d2d779b3c54cde85d908c0</string>
+</dict>
+</plist>
