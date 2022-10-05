@@ -1,11 +1,62 @@
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/UI/mainpage.dart';
+import 'package:rider_app/UI/primaryscreen.dart';
 import 'package:rider_app/UI/signuppage.dart';
+import 'package:rider_app/main.dart';
+
+import '../utils.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   static const String idScreen = "Login";
+
+  final formKey = GlobalKey<FormState>();
+
+  TextEditingController emailTextEditingController = TextEditingController();
+  TextEditingController passwordTextEditingController = TextEditingController();
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  void signIn(BuildContext context) async {
+
+    final isValid = formKey.currentState!.validate();
+    if(!isValid)
+      return;
+
+    //print("Sign In");
+
+    final User? user = (await _firebaseAuth.signInWithEmailAndPassword(
+        email: emailTextEditingController.text.trim(),
+        password: passwordTextEditingController.text.trim()
+      ).catchError((errMsg){
+      Utils.showSnackBar(context, "Invalid Email or Password.");
+      })
+    ).user;
+
+    if(user != null){
+      userRef.child(user.uid).once().then((event) {
+        final DataSnapshot snap = event.snapshot;
+        if(snap.value != null){
+          Navigator.pushNamedAndRemoveUntil(context, PrimaryScreen.idScreen, (route) => false);
+          Utils.showSnackBar(context, "Logged In Succefully");
+        }
+        else {
+          _firebaseAuth.signOut();
+          Utils.showSnackBar(context, "This account does not exist.");
+        }
+      });
+
+    } else {
+      Utils.showSnackBar(context, "Cannot Sign In.");
+    }
+
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,42 +132,69 @@ class LoginPage extends StatelessWidget {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      children: const <Widget>[
-                        TextField(
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            labelStyle: TextStyle(
-                              fontSize: 14.0,
-                            ),
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
-                            ),
-                          ),
-                          style: TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            controller: emailTextEditingController,
+                            keyboardType: TextInputType.emailAddress,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (email) =>
+                            email != null && EmailValidator.validate(email)
+                                ? null
+                                : "Enter a valid email",
 
-                        TextField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            labelStyle: TextStyle(
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              labelStyle: TextStyle(
+                                fontSize: 14.0,
+                              ),
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                              ),
+                            ),
+                            style: TextStyle(
                               fontSize: 14.0,
                             ),
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
+                          ),
+
+                          TextFormField(
+                            controller: passwordTextEditingController,
+                            obscureText: true,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if(value!.isEmpty){
+                                return "Please Enter a Password";
+                              } else {
+                                bool result = Utils.validatePassword(value);
+                                if(result){
+                                  return null;
+                                }
+                                else{
+                                  return "Password must be 9 characters or more and"
+                                      "\nshould contain Capital, small letters"
+                                      "\nand Numbers.";
+                                }
+                              }
+                            },
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: TextStyle(
+                                fontSize: 14.0,
+                              ),
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                              ),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14.0,
                             ),
                           ),
-                          style: TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
@@ -132,7 +210,7 @@ class LoginPage extends StatelessWidget {
                         height: 60,
                         color: Colors.blueGrey[200],
                         onPressed: () {
-                          print("Logging in");
+                          signIn(context);
                         },
 
                         shape: RoundedRectangleBorder(
@@ -154,11 +232,11 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
 
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       Navigator.pushNamedAndRemoveUntil(context, SignUpPage.idScreen, (route) => false);
                     },
-                    child: Text(
+                    child: const Text(
                       "Do not have an Account? Sign Up Now."
                     ),
                   ),
