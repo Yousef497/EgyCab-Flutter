@@ -2,12 +2,13 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:rider_app/AllWidgets/progressDialog.dart';
 import 'package:rider_app/UI/mainpage.dart';
 import 'package:rider_app/UI/primaryscreen.dart';
 import 'package:rider_app/UI/signuppage.dart';
 import 'package:rider_app/main.dart';
 
-import '../utils.dart';
+import '../Utils/utils.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -26,12 +27,19 @@ class LoginPage extends StatelessWidget {
     if(!isValid)
       return;
 
-    //print("Sign In");
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return ProgressDialog(message: "Authenticating, Please wait.",);
+        }
+    );
 
     final User? user = (await _firebaseAuth.signInWithEmailAndPassword(
         email: emailTextEditingController.text.trim(),
         password: passwordTextEditingController.text.trim()
       ).catchError((errMsg){
+      Navigator.of(context).pop();
       Utils.showSnackBar(context, "Invalid Email or Password.");
       })
     ).user;
@@ -40,16 +48,19 @@ class LoginPage extends StatelessWidget {
       userRef.child(user.uid).once().then((event) {
         final DataSnapshot snap = event.snapshot;
         if(snap.value != null){
+          Navigator.of(context).pop();
           Navigator.pushNamedAndRemoveUntil(context, PrimaryScreen.idScreen, (route) => false);
           Utils.showSnackBar(context, "Logged In Succefully");
         }
         else {
           _firebaseAuth.signOut();
+          Navigator.of(context).pop();
           Utils.showSnackBar(context, "This account does not exist.");
         }
       });
 
     } else {
+      Navigator.of(context).pop();
       Utils.showSnackBar(context, "Cannot Sign In.");
     }
 

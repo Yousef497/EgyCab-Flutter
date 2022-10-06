@@ -5,7 +5,7 @@ import 'package:rider_app/UI/mainpage.dart';
 import 'package:rider_app/UI/loginpage.dart';
 import 'package:rider_app/UI/primaryscreen.dart';
 import 'package:rider_app/UI/signuppage.dart';
-import 'package:rider_app/utils.dart';
+import 'package:rider_app/Utils/utils.dart';
 
 import 'firebase_options.dart';
 

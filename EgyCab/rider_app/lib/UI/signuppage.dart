@@ -6,7 +6,8 @@ import 'package:rider_app/UI/loginpage.dart';
 import 'package:rider_app/UI/mainpage.dart';
 import 'package:rider_app/main.dart';
 
-import '../utils.dart';
+import '../AllWidgets/progressDialog.dart';
+import '../Utils/utils.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({Key? key}) : super(key: key);
@@ -22,22 +23,31 @@ class SignUpPage extends StatelessWidget {
   TextEditingController phoneTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
 
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Future<void> signUp(BuildContext context) async {
 
     final isValid = formKey.currentState!.validate();
     if(!isValid)
       return;
 
-    //print("Sign UP");
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return ProgressDialog(message: "Registering, Please wait.",);
+        }
+    );
+
 
     try{
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await _firebaseAuth.createUserWithEmailAndPassword(
         email: emailTextEditingController.text.trim(),
         password: passwordTextEditingController.text.trim(),
       );
+      Navigator.of(context).pop();
       await Utils.sendEmailVerification(context);
 
-      final User? user = FirebaseAuth.instance.currentUser;
+      final User? user = _firebaseAuth.currentUser;
 
       Map userDataMap = {
         "name": nameTextEditingController.text.trim(),
@@ -47,10 +57,12 @@ class SignUpPage extends StatelessWidget {
 
       userRef.child(user!.uid).set(userDataMap);
       Utils.showSnackBar(context, "Congratulations, Account Created Succefully");
+      _firebaseAuth.signOut();
       Navigator.pushNamedAndRemoveUntil(context, MainPage.idScreen, (route) => false);
 
     } on FirebaseAuthException catch (e){
-      print(e);
+      //print(e);
+      Navigator.of(context).pop();
       Utils.showSnackBar(context, e.message!);
     }
 
